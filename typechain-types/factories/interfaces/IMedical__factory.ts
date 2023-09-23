@@ -118,7 +118,7 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-];
+] as const;
 
 export class IMedical__factory {
   static readonly abi = _abi;

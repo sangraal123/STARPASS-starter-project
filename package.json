@@ -34,7 +34,7 @@
         "@typescript-eslint/eslint-plugin": "^4.33.0",
         "@typescript-eslint/parser": "^4.33.0",
         "chai": "^4.3.6",
-        "dotenv": "^16.0.1",
+        "dotenv": "^16.3.1",
         "eslint": "^7.32.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-config-standard": "^16.0.3",
@@ -55,13 +55,15 @@
         "typescript": "^4.8.4"
     },
     "dependencies": {
+        "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
         "@nomicfoundation/hardhat-network-helpers": "^1.0.6",
         "@openzeppelin/contracts": "^4.7.3"
     },
     "scripts": {
+        "deploy": "npx hardhat run scripts/deploy.ts --network sepolia",
         "lint": "eslint --fix test/** scripts/**",
         "prettier:check": "prettier --ignore-unknown --no-error-on-unmatched-pattern --ignore-path .gitignore  --ignore-path .prettierignore --check .",
-        "prettier:format": "prettier --ignore-unknown --no-error-on-unmatched-pattern --ignore-path .gitignore --ignore-path .prettierignore --write .", 
+        "prettier:format": "prettier --ignore-unknown --no-error-on-unmatched-pattern --ignore-path .gitignore --ignore-path .prettierignore --write .",
         "solhint:check": "solhint --fix --max-warnings 0 \"contracts/**/*.sol\"",
         "prepush": "yarn lint && yarn prettier:check && yarn solhint:check",
         "typechain": "npx hardhat typechain && yarn prettier:format",
