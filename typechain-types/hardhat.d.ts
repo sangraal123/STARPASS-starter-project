@@ -13,10 +13,6 @@ import { ethers } from "ethers";
 declare module "hardhat/types/runtime" {
   interface HardhatEthersHelpers extends HardhatEthersHelpersBase {
     getContractFactory(
-      name: "Government",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Government__factory>;
-    getContractFactory(
       name: "IGovernment",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IGovernment__factory>;
@@ -29,19 +25,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ISocialNetwork__factory>;
     getContractFactory(
-      name: "Medical",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Medical__factory>;
-    getContractFactory(
       name: "SocialNetwork",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SocialNetwork__factory>;
 
-    getContractAt(
-      name: "Government",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Government>;
     getContractAt(
       name: "IGovernment",
       address: string,
@@ -57,11 +44,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ISocialNetwork>;
-    getContractAt(
-      name: "Medical",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Medical>;
     getContractAt(
       name: "SocialNetwork",
       address: string,

@@ -6,16 +6,12 @@
 import type * as interfaces from "./interfaces";
 
 export type { interfaces };
-export type { Government } from "./Government";
-export type { Medical } from "./Medical";
 export type { SocialNetwork } from "./SocialNetwork";
 export * as factories from "./factories";
-export { Government__factory } from "./factories/Government__factory";
 export type { IGovernment } from "./interfaces/IGovernment";
 export { IGovernment__factory } from "./factories/interfaces/IGovernment__factory";
 export type { IMedical } from "./interfaces/IMedical";
 export { IMedical__factory } from "./factories/interfaces/IMedical__factory";
 export type { ISocialNetwork } from "./interfaces/ISocialNetwork";
 export { ISocialNetwork__factory } from "./factories/interfaces/ISocialNetwork__factory";
-export { Medical__factory } from "./factories/Medical__factory";
 export { SocialNetwork__factory } from "./factories/SocialNetwork__factory";
