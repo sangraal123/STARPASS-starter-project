@@ -9,12 +9,8 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from "./common";
-import type {
-  FunctionFragment,
-  Result,
-  EventFragment,
-} from "@ethersproject/abi";
+} from "../../common";
+import type { FunctionFragment, Result } from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   BaseContract,
@@ -29,7 +25,7 @@ import type {
   utils,
 } from "ethers";
 
-export interface SocialNetworkInterface extends utils.Interface {
+export interface ISocialNetworkInterface extends utils.Interface {
   functions: {
     "getLastPostId()": FunctionFragment;
     "getPost(uint256)": FunctionFragment;
@@ -77,33 +73,15 @@ export interface SocialNetworkInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "post", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "unlike", data: BytesLike): Result;
 
-  events: {
-    "NewPost(address,string,uint256,uint256,uint256)": EventFragment;
-  };
-
-  getEvent(nameOrSignatureOrTopic: "NewPost"): EventFragment;
+  events: {};
 }
 
-export interface NewPostEventObject {
-  poster: string;
-  message: string;
-  timestamp: BigNumber;
-  likes: BigNumber;
-  id: BigNumber;
-}
-export type NewPostEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber],
-  NewPostEventObject
->;
-
-export type NewPostEventFilter = TypedEventFilter<NewPostEvent>;
-
-export interface SocialNetwork extends BaseContract {
+export interface ISocialNetwork extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: SocialNetworkInterface;
+  interface: ISocialNetworkInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -131,11 +109,10 @@ export interface SocialNetwork extends BaseContract {
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, BigNumber, BigNumber] & {
-        poster: string;
+      [string, BigNumber, BigNumber] & {
         message: string;
-        time: BigNumber;
         totalLikes: BigNumber;
+        time: BigNumber;
       }
     >;
 
@@ -161,11 +138,10 @@ export interface SocialNetwork extends BaseContract {
     _postId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, string, BigNumber, BigNumber] & {
-      poster: string;
+    [string, BigNumber, BigNumber] & {
       message: string;
-      time: BigNumber;
       totalLikes: BigNumber;
+      time: BigNumber;
     }
   >;
 
@@ -191,11 +167,10 @@ export interface SocialNetwork extends BaseContract {
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, BigNumber, BigNumber] & {
-        poster: string;
+      [string, BigNumber, BigNumber] & {
         message: string;
-        time: BigNumber;
         totalLikes: BigNumber;
+        time: BigNumber;
       }
     >;
 
@@ -215,22 +190,7 @@ export interface SocialNetwork extends BaseContract {
     ): Promise<void>;
   };
 
-  filters: {
-    "NewPost(address,string,uint256,uint256,uint256)"(
-      poster?: null,
-      message?: null,
-      timestamp?: null,
-      likes?: null,
-      id?: PromiseOrValue<BigNumberish> | null
-    ): NewPostEventFilter;
-    NewPost(
-      poster?: null,
-      message?: null,
-      timestamp?: null,
-      likes?: null,
-      id?: PromiseOrValue<BigNumberish> | null
-    ): NewPostEventFilter;
-  };
+  filters: {};
 
   estimateGas: {
     getLastPostId(overrides?: CallOverrides): Promise<BigNumber>;

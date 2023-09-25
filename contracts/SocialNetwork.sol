@@ -38,9 +38,10 @@ contract SocialNetwork is ISocialNetwork {
         external
         view
         returns (
+            address poster,
             string memory message,
-            uint256 totalLikes,
-            uint256 time
+            uint256 time,
+            uint256 totalLikes
         )
     {
         for (uint256 i = 0; i < _posts.length; i++) {
@@ -49,7 +50,7 @@ contract SocialNetwork is ISocialNetwork {
         }
         for (uint256 i = 0; i < _posts.length; i++) {
             if (_posts[i].id == _postId) {
-                return (_posts[i].message, _posts[i].likes, _posts[i].timestamp);
+                return (_posts[i].poster, _posts[i].message, _posts[i].timestamp, _posts[i].likes);
             }
         }
         // 指定されたIDに対応する投稿が見つからない場合はエラーメッセージを返す

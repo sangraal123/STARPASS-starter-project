@@ -15,11 +15,9 @@ interface ISocialNetwork {
         external
         view
         returns (
-            address poster,
             string memory message,
-            uint256 time,
-            uint256 totalLikes
-
+            uint256 totalLikes,
+            uint256 time
         );
 
     // Like a post by its id.

@@ -6,7 +6,7 @@
 import type {
   ISocialNetwork,
   ISocialNetworkInterface,
-} from "../../interfaces/ISocialNetwork";
+} from "../../../interfaces/ISocialNetworkDefault.sol/ISocialNetwork";
 import type { Provider } from "@ethersproject/providers";
 import { Contract, Signer, utils } from "ethers";
 
@@ -35,23 +35,18 @@ const _abi = [
     name: "getPost",
     outputs: [
       {
-        internalType: "address",
-        name: "poster",
-        type: "address",
-      },
-      {
         internalType: "string",
         name: "message",
         type: "string",
       },
       {
         internalType: "uint256",
-        name: "time",
+        name: "totalLikes",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "totalLikes",
+        name: "time",
         type: "uint256",
       },
     ],

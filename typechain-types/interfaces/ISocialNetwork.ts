@@ -109,10 +109,11 @@ export interface ISocialNetwork extends BaseContract {
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber] & {
+      [string, string, BigNumber, BigNumber] & {
+        poster: string;
         message: string;
-        totalLikes: BigNumber;
         time: BigNumber;
+        totalLikes: BigNumber;
       }
     >;
 
@@ -138,10 +139,11 @@ export interface ISocialNetwork extends BaseContract {
     _postId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, BigNumber, BigNumber] & {
+    [string, string, BigNumber, BigNumber] & {
+      poster: string;
       message: string;
-      totalLikes: BigNumber;
       time: BigNumber;
+      totalLikes: BigNumber;
     }
   >;
 
@@ -167,10 +169,11 @@ export interface ISocialNetwork extends BaseContract {
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, BigNumber, BigNumber] & {
+      [string, string, BigNumber, BigNumber] & {
+        poster: string;
         message: string;
-        totalLikes: BigNumber;
         time: BigNumber;
+        totalLikes: BigNumber;
       }
     >;
 
