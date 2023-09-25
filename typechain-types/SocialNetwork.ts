@@ -32,7 +32,10 @@ import type {
 export interface SocialNetworkInterface extends utils.Interface {
   functions: {
     "getLastPostId()": FunctionFragment;
+    "getLikedStates(address)": FunctionFragment;
     "getPost(uint256)": FunctionFragment;
+    "getTotalLikes()": FunctionFragment;
+    "getTotalLikesbyPost(uint256)": FunctionFragment;
     "like(uint256)": FunctionFragment;
     "post(string)": FunctionFragment;
     "unlike(uint256)": FunctionFragment;
@@ -41,7 +44,10 @@ export interface SocialNetworkInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "getLastPostId"
+      | "getLikedStates"
       | "getPost"
+      | "getTotalLikes"
+      | "getTotalLikesbyPost"
       | "like"
       | "post"
       | "unlike"
@@ -52,7 +58,19 @@ export interface SocialNetworkInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getLikedStates",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getPost",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTotalLikes",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTotalLikesbyPost",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -72,31 +90,48 @@ export interface SocialNetworkInterface extends utils.Interface {
     functionFragment: "getLastPostId",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLikedStates",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getPost", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalLikes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalLikesbyPost",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "like", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "post", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "unlike", data: BytesLike): Result;
 
   events: {
-    "NewPost(address,string,uint256,uint256,uint256)": EventFragment;
+    "NewLike()": EventFragment;
+    "NewPost()": EventFragment;
+    "NewUnlike()": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "NewLike"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "NewPost"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NewUnlike"): EventFragment;
 }
 
-export interface NewPostEventObject {
-  poster: string;
-  message: string;
-  timestamp: BigNumber;
-  likes: BigNumber;
-  id: BigNumber;
-}
-export type NewPostEvent = TypedEvent<
-  [string, string, BigNumber, BigNumber, BigNumber],
-  NewPostEventObject
->;
+export interface NewLikeEventObject {}
+export type NewLikeEvent = TypedEvent<[], NewLikeEventObject>;
+
+export type NewLikeEventFilter = TypedEventFilter<NewLikeEvent>;
+
+export interface NewPostEventObject {}
+export type NewPostEvent = TypedEvent<[], NewPostEventObject>;
 
 export type NewPostEventFilter = TypedEventFilter<NewPostEvent>;
+
+export interface NewUnlikeEventObject {}
+export type NewUnlikeEvent = TypedEvent<[], NewUnlikeEventObject>;
+
+export type NewUnlikeEventFilter = TypedEventFilter<NewUnlikeEvent>;
 
 export interface SocialNetwork extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -127,20 +162,31 @@ export interface SocialNetwork extends BaseContract {
   functions: {
     getLastPostId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    getLikedStates(
+      sender: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[boolean[]]>;
+
     getPost(
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, BigNumber, BigNumber] & {
+      [string, string, BigNumber] & {
         poster: string;
         message: string;
         time: BigNumber;
-        totalLikes: BigNumber;
       }
     >;
 
+    getTotalLikes(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getTotalLikesbyPost(
+      postId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     like(
-      _postId: PromiseOrValue<BigNumberish>,
+      postId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -150,27 +196,38 @@ export interface SocialNetwork extends BaseContract {
     ): Promise<ContractTransaction>;
 
     unlike(
-      _postId: PromiseOrValue<BigNumberish>,
+      postId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   getLastPostId(overrides?: CallOverrides): Promise<BigNumber>;
 
+  getLikedStates(
+    sender: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<boolean[]>;
+
   getPost(
     _postId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, string, BigNumber, BigNumber] & {
+    [string, string, BigNumber] & {
       poster: string;
       message: string;
       time: BigNumber;
-      totalLikes: BigNumber;
     }
   >;
 
+  getTotalLikes(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getTotalLikesbyPost(
+    postId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   like(
-    _postId: PromiseOrValue<BigNumberish>,
+    postId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -180,27 +237,38 @@ export interface SocialNetwork extends BaseContract {
   ): Promise<ContractTransaction>;
 
   unlike(
-    _postId: PromiseOrValue<BigNumberish>,
+    postId: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     getLastPostId(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getLikedStates(
+      sender: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean[]>;
+
     getPost(
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, BigNumber, BigNumber] & {
+      [string, string, BigNumber] & {
         poster: string;
         message: string;
         time: BigNumber;
-        totalLikes: BigNumber;
       }
     >;
 
+    getTotalLikes(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTotalLikesbyPost(
+      postId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     like(
-      _postId: PromiseOrValue<BigNumberish>,
+      postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -210,38 +278,44 @@ export interface SocialNetwork extends BaseContract {
     ): Promise<void>;
 
     unlike(
-      _postId: PromiseOrValue<BigNumberish>,
+      postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
 
   filters: {
-    "NewPost(address,string,uint256,uint256,uint256)"(
-      poster?: null,
-      message?: null,
-      timestamp?: null,
-      likes?: null,
-      id?: PromiseOrValue<BigNumberish> | null
-    ): NewPostEventFilter;
-    NewPost(
-      poster?: null,
-      message?: null,
-      timestamp?: null,
-      likes?: null,
-      id?: PromiseOrValue<BigNumberish> | null
-    ): NewPostEventFilter;
+    "NewLike()"(): NewLikeEventFilter;
+    NewLike(): NewLikeEventFilter;
+
+    "NewPost()"(): NewPostEventFilter;
+    NewPost(): NewPostEventFilter;
+
+    "NewUnlike()"(): NewUnlikeEventFilter;
+    NewUnlike(): NewUnlikeEventFilter;
   };
 
   estimateGas: {
     getLastPostId(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getLikedStates(
+      sender: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     getPost(
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getTotalLikes(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTotalLikesbyPost(
+      postId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     like(
-      _postId: PromiseOrValue<BigNumberish>,
+      postId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -251,7 +325,7 @@ export interface SocialNetwork extends BaseContract {
     ): Promise<BigNumber>;
 
     unlike(
-      _postId: PromiseOrValue<BigNumberish>,
+      postId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
@@ -259,13 +333,25 @@ export interface SocialNetwork extends BaseContract {
   populateTransaction: {
     getLastPostId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getLikedStates(
+      sender: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getPost(
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getTotalLikes(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getTotalLikesbyPost(
+      postId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     like(
-      _postId: PromiseOrValue<BigNumberish>,
+      postId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -275,7 +361,7 @@ export interface SocialNetwork extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     unlike(
-      _postId: PromiseOrValue<BigNumberish>,
+      postId: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

@@ -29,25 +29,52 @@ describe("Deployment", function () {
 
   it("should like a post", async function () {
     const {socialNetwork} = await loadFixture(deploymentFixture);
-    const message = await "We like it!";
+    const message = "We like it!";
+    const totalLikes = await socialNetwork.getTotalLikes();
     await socialNetwork.post(message);
+    
+    await socialNetwork.like(1);
 
-    const postId = await socialNetwork.getLastPostId();
-    await socialNetwork.like(postId);
-    const post = await socialNetwork.getPost(postId);
-    expect(await post.totalLikes).to.equal(1);
+    expect(await socialNetwork.getTotalLikes()).to.equal(totalLikes + 1);
   });
 
   it("should unlike a post", async function () {
     const {socialNetwork} = await loadFixture(deploymentFixture);
-    const message = await "We don't like it!";
+    const message = "We don't like it!";
+    const totalLikes = await socialNetwork.getTotalLikes();
     await socialNetwork.post(message);
 
-    const postId = await socialNetwork.getLastPostId();
-    await socialNetwork.like(postId);
-    await socialNetwork.unlike(postId);
-    const post = await socialNetwork.getPost(postId);
-    expect(await post.totalLikes).to.equal(0);
+    await socialNetwork.like(1);
+    await socialNetwork.unlike(1);
+
+    expect(await socialNetwork.getTotalLikes()).to.equal(totalLikes);
+  });
+
+  it("should store a liked state", async function () {
+    const {socialNetwork} = await loadFixture(deploymentFixture);
+    const message = "Checking Liked State";
+    await socialNetwork.post(message);
+    await socialNetwork.like(1);
+
+    const {poster} = await socialNetwork.getPost(1);
+
+    const likeornot = await socialNetwork.getLikedStates(ethers.utils.getAddress(poster));
+    console.log("LikeorNot:", likeornot);
+    expect(await likeornot["0"]).to.equal(true);
+  });
+
+  it("should store a unliked state", async function () {
+    const {socialNetwork} = await loadFixture(deploymentFixture);
+    const message = "Checking unliked State";
+    await socialNetwork.post(message);
+    await socialNetwork.like(1);
+    await socialNetwork.unlike(1);
+
+    const {poster} = await socialNetwork.getPost(1);
+
+    const likeornot = await socialNetwork.getLikedStates(ethers.utils.getAddress(poster));
+    console.log("LikeorNot:", likeornot);
+    expect(await likeornot["0"]).to.equal(false);
   });
 
   it("should revert if post does not exist", async function () {

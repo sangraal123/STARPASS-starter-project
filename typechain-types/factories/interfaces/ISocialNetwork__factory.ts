@@ -27,6 +27,25 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "getLikedStates",
+    outputs: [
+      {
+        internalType: "bool[]",
+        name: "",
+        type: "bool[]",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "_postId",
         type: "uint256",
@@ -49,9 +68,36 @@ const _abi = [
         name: "time",
         type: "uint256",
       },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getTotalLikes",
+    outputs: [
       {
         internalType: "uint256",
-        name: "totalLikes",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_postId",
+        type: "uint256",
+      },
+    ],
+    name: "getTotalLikesbyPost",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
         type: "uint256",
       },
     ],

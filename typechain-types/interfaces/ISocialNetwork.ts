@@ -28,7 +28,10 @@ import type {
 export interface ISocialNetworkInterface extends utils.Interface {
   functions: {
     "getLastPostId()": FunctionFragment;
+    "getLikedStates(address)": FunctionFragment;
     "getPost(uint256)": FunctionFragment;
+    "getTotalLikes()": FunctionFragment;
+    "getTotalLikesbyPost(uint256)": FunctionFragment;
     "like(uint256)": FunctionFragment;
     "post(string)": FunctionFragment;
     "unlike(uint256)": FunctionFragment;
@@ -37,7 +40,10 @@ export interface ISocialNetworkInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "getLastPostId"
+      | "getLikedStates"
       | "getPost"
+      | "getTotalLikes"
+      | "getTotalLikesbyPost"
       | "like"
       | "post"
       | "unlike"
@@ -48,7 +54,19 @@ export interface ISocialNetworkInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getLikedStates",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getPost",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTotalLikes",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTotalLikesbyPost",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -68,7 +86,19 @@ export interface ISocialNetworkInterface extends utils.Interface {
     functionFragment: "getLastPostId",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getLikedStates",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "getPost", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalLikes",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalLikesbyPost",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "like", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "post", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "unlike", data: BytesLike): Result;
@@ -105,17 +135,28 @@ export interface ISocialNetwork extends BaseContract {
   functions: {
     getLastPostId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    getLikedStates(
+      sender: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     getPost(
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, BigNumber, BigNumber] & {
+      [string, string, BigNumber] & {
         poster: string;
         message: string;
         time: BigNumber;
-        totalLikes: BigNumber;
       }
     >;
+
+    getTotalLikes(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getTotalLikesbyPost(
+      _postId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
 
     like(
       _postId: PromiseOrValue<BigNumberish>,
@@ -135,17 +176,28 @@ export interface ISocialNetwork extends BaseContract {
 
   getLastPostId(overrides?: CallOverrides): Promise<BigNumber>;
 
+  getLikedStates(
+    sender: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   getPost(
     _postId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<
-    [string, string, BigNumber, BigNumber] & {
+    [string, string, BigNumber] & {
       poster: string;
       message: string;
       time: BigNumber;
-      totalLikes: BigNumber;
     }
   >;
+
+  getTotalLikes(overrides?: CallOverrides): Promise<BigNumber>;
+
+  getTotalLikesbyPost(
+    _postId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   like(
     _postId: PromiseOrValue<BigNumberish>,
@@ -165,17 +217,28 @@ export interface ISocialNetwork extends BaseContract {
   callStatic: {
     getLastPostId(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getLikedStates(
+      sender: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<boolean[]>;
+
     getPost(
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<
-      [string, string, BigNumber, BigNumber] & {
+      [string, string, BigNumber] & {
         poster: string;
         message: string;
         time: BigNumber;
-        totalLikes: BigNumber;
       }
     >;
+
+    getTotalLikes(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTotalLikesbyPost(
+      _postId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     like(
       _postId: PromiseOrValue<BigNumberish>,
@@ -198,7 +261,19 @@ export interface ISocialNetwork extends BaseContract {
   estimateGas: {
     getLastPostId(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getLikedStates(
+      sender: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     getPost(
+      _postId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getTotalLikes(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTotalLikesbyPost(
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -222,7 +297,19 @@ export interface ISocialNetwork extends BaseContract {
   populateTransaction: {
     getLastPostId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    getLikedStates(
+      sender: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     getPost(
+      _postId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getTotalLikes(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getTotalLikesbyPost(
       _postId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
